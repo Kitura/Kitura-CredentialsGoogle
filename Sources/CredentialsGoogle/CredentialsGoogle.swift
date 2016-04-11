@@ -44,7 +44,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     public var usersCache : NSCache?
     
     /// https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens
-    public func authenticate (request: RouterRequest, options: [String:AnyObject], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:AnyObject], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
         
         if let code = request.queryParams["code"] {
             var requestOptions = [ClientRequestOptions]()
@@ -66,8 +66,6 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                         try googleResponse.readAllData(body)
                         var jsonBody = JSON(data: body)
                         if let token = jsonBody["access_token"].string {
-                            print("got token ", token)
-                            
                             requestOptions = [ClientRequestOptions]()
                             requestOptions.append(.Schema("https://"))
                             requestOptions.append(.Hostname("www.googleapis.com"))
@@ -85,12 +83,10 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                                         jsonBody = JSON(data: body)
                                         if let id = jsonBody["sub"].string,
                                             let name = jsonBody["name"].string {
-                                            let userProfile = UserProfile(id: id, name: name)
+                                            let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
                                             let newCacheElement = BaseCacheElement(profile: userProfile)
                                             self.usersCache!.setObject(newCacheElement, forKey: token.bridge())
                                             onSuccess(userProfile)
-                                            print("ID ", id)
-                                            print("name ", name)
                                             return
                                         }
                                     }
@@ -116,7 +112,14 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
             requestForToken.end(body)
         }
         else {
-            onFailure()
+            // Log in
+            do {
+                try response.redirect("https://accounts.google.com/o/oauth2/auth?client_id=\(clientId)&redirect_uri=\(callbackUrl)&scope=profile&response_type=code")
+                inProgress()
+            }
+            catch {
+                Log.error("Failed to redirect to Google login page")
+            }
         }
     }
 }
