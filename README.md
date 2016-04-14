@@ -27,7 +27,7 @@ import CredentialsGoogle
 
 let credentials = Credentials()
 let googleCredentials = CredentialsGoogle(clientId: googleClientId, clientSecret: googleClientSecret, callbackUrl: serverUrl + "/login/google/callback")
-credentials.registerWithName(googleCredentials.name, plugin: googleCredentials)
+credentials.register(googleCredentials)
 ```
 Specify where to redirect non-authenticated requests:
 ```swift

@@ -35,6 +35,10 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
         return "Google"
     }
     
+    public var type : CredentialsPluginType {
+        return .Session
+    }
+    
     public init (clientId: String, clientSecret : String, callbackUrl : String) {
         self.clientId = clientId
         self.clientSecret = clientSecret
