@@ -29,6 +29,12 @@ let credentials = Credentials()
 let googleCredentials = CredentialsGoogle(clientId: googleClientId, clientSecret: googleClientSecret, callbackUrl: serverUrl + "/login/google/callback")
 credentials.register(googleCredentials)
 ```
+**Where:**
+   - *googleClientId* is the Client ID from the credentials tab of your project in the Google Developer's console
+   - *googleClientSecret* is the Client Secret from the credentials tab of your project in the Google Developer's console
+
+**Note:** The *callbackUrl* parameter above is used to tell the Google web login page where the user's browser should be redirected when the login is successful. It should be a URL handled by the server you are writing.
+
 Specify where to redirect non-authenticated requests:
 ```swift
 credentials.options["failureRedirect"] = "/login/google"
@@ -44,7 +50,7 @@ router.get("/private/data", handler:
         next()
 })
 ```
-And call `authenticate` to login with Google and to handle Google callback:
+And call `authenticate` to login with Google and to handle the redirect (callback) from the Google login web page after successful login:
 
 ```swift
 router.get("/login/google",
