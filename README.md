@@ -50,7 +50,7 @@ router.get("/private/data", handler:
         next()
 })
 ```
-And call `authenticate` to login with Google and to handle the redirect (callback) from the Google login web page after successful login:
+And call `authenticate` to login with Google and to handle the redirect (callback) from the Google login web page after a successful login:
 
 ```swift
 router.get("/login/google",
