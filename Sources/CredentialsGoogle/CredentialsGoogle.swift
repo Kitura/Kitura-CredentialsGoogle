@@ -48,7 +48,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     public var usersCache : NSCache?
     
     /// https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:AnyObject], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
         
         if let code = request.queryParams["code"] {
             var requestOptions = [ClientRequestOptions]()
