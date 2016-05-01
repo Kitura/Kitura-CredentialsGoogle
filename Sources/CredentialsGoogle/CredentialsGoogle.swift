@@ -38,14 +38,19 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     public var type : CredentialsPluginType {
         return .Session
     }
+
+#if os(OSX)
+    public var usersCache : NSCache<NSString, BaseCacheElement>?
+#else
+    public var usersCache : NSCache?
+#endif
+
     
     public init (clientId: String, clientSecret : String, callbackUrl : String) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
     }
-    
-    public var usersCache : NSCache?
     
     /// https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens
     public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
@@ -67,7 +72,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                 if let googleResponse = googleResponse where googleResponse.statusCode == HttpStatusCode.OK {
                     do {
                         var body = NSMutableData()
-                        try googleResponse.readAllData(body)
+                        try googleResponse.readAllData(into: body)
                         var jsonBody = JSON(data: body)
                         if let token = jsonBody["access_token"].string {
                             requestOptions = [ClientRequestOptions]()
@@ -83,13 +88,11 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                                 if let profileResponse = profileResponse where profileResponse.statusCode == HttpStatusCode.OK {
                                     do {
                                         body = NSMutableData()
-                                        try profileResponse.readAllData(body)
+                                        try profileResponse.readAllData(into: body)
                                         jsonBody = JSON(data: body)
                                         if let id = jsonBody["sub"].string,
                                             let name = jsonBody["name"].string {
                                             let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
-                                            let newCacheElement = BaseCacheElement(profile: userProfile)
-                                            self.usersCache!.setObject(newCacheElement, forKey: token.bridge())
                                             onSuccess(userProfile)
                                             return
                                         }
