@@ -36,7 +36,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     }
     
     public var type : CredentialsPluginType {
-        return .Session
+        return .session
     }
 
 #if os(OSX)
@@ -57,35 +57,35 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
         
         if let code = request.queryParams["code"] {
             var requestOptions = [ClientRequestOptions]()
-            requestOptions.append(.Schema("https://"))
-            requestOptions.append(.Hostname("accounts.google.com"))
-            requestOptions.append(.Method("POST"))
-            requestOptions.append(.Path("/o/oauth2/token"))
+            requestOptions.append(.schema("https://"))
+            requestOptions.append(.hostname("accounts.google.com"))
+            requestOptions.append(.method("POST"))
+            requestOptions.append(.path("/o/oauth2/token"))
             var headers = [String:String]()
             headers["Accept"] = "application/json"
             headers["Content-Type"] = "application/x-www-form-urlencoded"
-            requestOptions.append(.Headers(headers))
+            requestOptions.append(.headers(headers))
  
             let body = "code=\(code)&client_id=\(clientId)&client_secret=\(clientSecret)&redirect_uri=\(callbackUrl)&grant_type=authorization_code"
             
-            let requestForToken = Http.request(requestOptions) { googleResponse in
-                if let googleResponse = googleResponse where googleResponse.statusCode == HttpStatusCode.OK {
+            let requestForToken = HTTP.request(requestOptions) { googleResponse in
+                if let googleResponse = googleResponse where googleResponse.statusCode == HTTPStatusCode.OK {
                     do {
                         var body = NSMutableData()
                         try googleResponse.readAllData(into: body)
                         var jsonBody = JSON(data: body)
                         if let token = jsonBody["access_token"].string {
                             requestOptions = [ClientRequestOptions]()
-                            requestOptions.append(.Schema("https://"))
-                            requestOptions.append(.Hostname("www.googleapis.com"))
-                            requestOptions.append(.Method("GET"))
-                            requestOptions.append(.Path("//oauth2/v3/userinfo?access_token=\(token)"))
+                            requestOptions.append(.schema("https://"))
+                            requestOptions.append(.hostname("www.googleapis.com"))
+                            requestOptions.append(.method("GET"))
+                            requestOptions.append(.path("//oauth2/v3/userinfo?access_token=\(token)"))
                             headers = [String:String]()
                             headers["Accept"] = "application/json"
-                            requestOptions.append(.Headers(headers))
+                            requestOptions.append(.headers(headers))
                             
-                            let requestForProfile = Http.request(requestOptions) { profileResponse in
-                                if let profileResponse = profileResponse where profileResponse.statusCode == HttpStatusCode.OK {
+                            let requestForProfile = HTTP.request(requestOptions) { profileResponse in
+                                if let profileResponse = profileResponse where profileResponse.statusCode == HTTPStatusCode.OK {
                                     do {
                                         body = NSMutableData()
                                         try profileResponse.readAllData(into: body)
