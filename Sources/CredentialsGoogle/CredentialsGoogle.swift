@@ -35,8 +35,8 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
         return "Google"
     }
     
-    public var type : CredentialsPluginType {
-        return .session
+    public var redirecting : Bool {
+        return true
     }
 
 #if os(OSX)
@@ -53,7 +53,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     }
     
     /// https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: () -> Void, onPass: () -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
         
         if let code = request.queryParams["code"] {
             var requestOptions = [ClientRequestOptions]()
@@ -102,7 +102,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                                     }
                                 }
                                 else {
-                                    onFailure()
+                                    onFailure(nil, nil)
                                 }
                             }
                             requestForProfile.end()
@@ -113,7 +113,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                     }
                 }
                 else {
-                    onFailure()
+                    onFailure(nil, nil)
                 }
             }
             requestForToken.end(body)
