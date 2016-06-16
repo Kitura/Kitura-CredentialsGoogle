@@ -63,7 +63,7 @@ router.get("/login/google/callback",
 
 ## Example of authentication with a Google OAuth token
 
-This example shows how to use this plugin to authenticate post requests, it shows both the server side and the client side of the request involved.
+This example shows how to use `CredentialsGoogleToken` plugin to authenticate post requests, it shows both the server side and the client side of the request involved.
 
 ### Server side
 
@@ -74,11 +74,11 @@ import Credentials
 import CredentialsGoogle
 
 let credentials = Credentials()
-let googleCredentialsPlugin = CredentialsGoogleToken()
+let googleCredentials = CredentialsGoogleToken()
 ```
 Now register the plugin:
 ```swift
-credentials.register(googleCredentialsPlugin)
+credentials.register(googleCredentials)
 ```
 
 Connect `credentials` middleware to post requests:
