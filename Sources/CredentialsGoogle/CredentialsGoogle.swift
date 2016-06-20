@@ -55,8 +55,8 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     /// https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens
     public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
         
-        if let code = request.queryParams["code"] {
-            var requestOptions = [ClientRequestOptions]()
+        if let code = request.queryParameters["code"] {
+            var requestOptions: [ClientRequest.Options] = []
             requestOptions.append(.schema("https://"))
             requestOptions.append(.hostname("accounts.google.com"))
             requestOptions.append(.method("POST"))
@@ -75,7 +75,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                         try googleResponse.readAllData(into: body)
                         var jsonBody = JSON(data: body)
                         if let token = jsonBody["access_token"].string {
-                            requestOptions = [ClientRequestOptions]()
+                            requestOptions = []
                             requestOptions.append(.schema("https://"))
                             requestOptions.append(.hostname("www.googleapis.com"))
                             requestOptions.append(.method("GET"))
