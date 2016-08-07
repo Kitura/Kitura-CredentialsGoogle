@@ -40,9 +40,9 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     }
 
 #if os(OSX)
-    public var usersCache : Cache<NSString, BaseCacheElement>?
+    public var usersCache : NSCache<NSString, BaseCacheElement>?
 #else
-    public var usersCache : NSCache?
+    public var usersCache : Cache?
 #endif
 
     
@@ -69,10 +69,10 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
             let body = "code=\(code)&client_id=\(clientId)&client_secret=\(clientSecret)&redirect_uri=\(callbackUrl)&grant_type=authorization_code"
             
             let requestForToken = HTTP.request(requestOptions) { googleResponse in
-                if let googleResponse = googleResponse where googleResponse.statusCode == HTTPStatusCode.OK {
+                if let googleResponse = googleResponse, googleResponse.statusCode == HTTPStatusCode.OK {
                     do {
-                        var body = NSMutableData()
-                        try googleResponse.readAllData(into: body)
+                        var body = Data()
+                        try googleResponse.readAllData(into: &body)
                         var jsonBody = JSON(data: body)
                         if let token = jsonBody["access_token"].string {
                             requestOptions = []
@@ -85,10 +85,10 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                             requestOptions.append(.headers(headers))
                             
                             let requestForProfile = HTTP.request(requestOptions) { profileResponse in
-                                if let profileResponse = profileResponse where profileResponse.statusCode == HTTPStatusCode.OK {
+                                if let profileResponse = profileResponse, profileResponse.statusCode == HTTPStatusCode.OK {
                                     do {
-                                        body = NSMutableData()
-                                        try profileResponse.readAllData(into: body)
+                                        body = Data()
+                                        try profileResponse.readAllData(into: &body)
                                         jsonBody = JSON(data: body)
                                         if let id = jsonBody["sub"].string,
                                             let name = jsonBody["name"].string {
