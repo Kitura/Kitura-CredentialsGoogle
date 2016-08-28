@@ -39,12 +39,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
         return true
     }
 
-#if os(OSX)
     public var usersCache : NSCache<NSString, BaseCacheElement>?
-#else
-    public var usersCache : Cache?
-#endif
-
     
     public init (clientId: String, clientSecret : String, callbackUrl : String) {
         self.clientId = clientId
@@ -53,7 +48,11 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     }
     
     /// https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens
-    public func authenticate (request: RouterRequest, response: RouterResponse, options: [String:OptionValue], onSuccess: (UserProfile) -> Void, onFailure: (HTTPStatusCode?, [String:String]?) -> Void, onPass: (HTTPStatusCode?, [String:String]?) -> Void, inProgress: () -> Void) {
+    public func authenticate (request: RouterRequest, response: RouterResponse,
+                              options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
+                              onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                              onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                              inProgress: @escaping () -> Void) {
         
         if let code = request.queryParameters["code"] {
             var requestOptions: [ClientRequest.Options] = []
