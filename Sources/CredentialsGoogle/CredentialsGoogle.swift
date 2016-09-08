@@ -23,31 +23,57 @@ import SwiftyJSON
 
 import Foundation
 
+// MARK CredentialsGoogle
+
+/// Authentication using Google web login with OAuth.
+/// See [Google's manual](https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens)
+/// for more information.
 public class CredentialsGoogle : CredentialsPluginProtocol {
     
     private var clientId : String
     
     private var clientSecret : String
     
+    /// A URL that Google redirects back to.
     public var callbackUrl : String
     
+    /// The name of the plugin.
     public var name : String {
         return "Google"
     }
     
+    /// An indication whether the plugin is redirecting or not.
     public var redirecting : Bool {
         return true
     }
 
+    /// Caching of user profile information.
     public var usersCache : NSCache<NSString, BaseCacheElement>?
-    
+
+    /// Initialize a `CredentialsGoogle`.
+    ///
+    /// - Parameter clientId: the Client ID in the Google Developer's console.
+    /// - Parameter clientSecret: the Client Secret in the Google Developer's console.
+    /// - Parameter callbackUrl: a URL that Google redirects back to.
+    /// - Returns: an instance of `CredentialsGoogle`.
     public init (clientId: String, clientSecret : String, callbackUrl : String) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
     }
     
-    /// https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens
+    /// Authenticate incoming request using Google web login with OAuth.
+    ///
+    /// - Parameter request: the `RouterRequest` object used to get information
+    ///                     about the request.
+    /// - Parameter response: the `RouterResponse` object used to respond to the
+    ///                       request.
+    /// - Parameter options: a dictionary of plugin specific options.
+    /// - Parameter onSuccess: a closure to invoke in case of successful authentication.
+    /// - Parameter onFailure: a closure to invoke in case of authentication failure.
+    /// - Parameter onPass: a closure to invoke when the plugin doesn't recognize the
+    ///                     authentication token in the request.
+    /// - Parameter inProgress: a closure to invoke in the process of redirecting authentication.
     public func authenticate (request: RouterRequest, response: RouterResponse,
                               options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
                               onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
