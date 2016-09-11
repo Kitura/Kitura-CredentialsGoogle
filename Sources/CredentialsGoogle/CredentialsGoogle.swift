@@ -30,32 +30,32 @@ import Foundation
 /// for more information.
 public class CredentialsGoogle : CredentialsPluginProtocol {
     
-    private var clientId : String
+    private var clientId: String
     
-    private var clientSecret : String
+    private var clientSecret: String
     
     /// The URL that Google redirects back to.
-    public var callbackUrl : String
+    public var callbackUrl: String
     
     /// The name of the plugin.
-    public var name : String {
+    public var name: String {
         return "Google"
     }
     
     /// An indication as to whether the plugin is redirecting or not.
-    public var redirecting : Bool {
+    public var redirecting: Bool {
         return true
     }
 
     /// User profile cache.
-    public var usersCache : NSCache<NSString, BaseCacheElement>?
+    public var usersCache: NSCache<NSString, BaseCacheElement>?
 
-    /// Initialize a `CredentialsGoogle`.
+    /// Initialize a `CredentialsGoogle` instance.
     ///
     /// - Parameter clientId: The Client ID in the Google Developer's console.
     /// - Parameter clientSecret: The Client Secret in the Google Developer's console.
     /// - Parameter callbackUrl: The URL that Google redirects back to.
-    public init (clientId: String, clientSecret : String, callbackUrl : String) {
+    public init (clientId: String, clientSecret: String, callbackUrl: String) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl

@@ -29,20 +29,20 @@ import Foundation
 public class CredentialsGoogleToken : CredentialsPluginProtocol {
     
     /// The name of the plugin.
-    public var name : String {
+    public var name: String {
         return "GoogleToken"
     }
     
     /// An indication as to whether the plugin is redirecting or not.
-    public var redirecting : Bool {
+    public var redirecting:  Bool {
         return false
     }
 
-    /// Initialize a `CredentialsGoogleToken`.
+    /// Initialize a `CredentialsGoogleToken` instance.
     public init () {}
     
     /// User profile cache.
-    public var usersCache : NSCache<NSString, BaseCacheElement>?
+    public var usersCache: NSCache<NSString, BaseCacheElement>?
     
     /// Authenticate incoming request using Google OAuth token.
     ///
