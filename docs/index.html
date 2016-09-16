@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>CredentialsGoogle  Reference</title>
+    <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="css/highlight.css" />
+    <meta charset="utf-8">
+    <script src="js/jquery.min.js" defer></script>
+    <script src="js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+
+
+    <a title="CredentialsGoogle  Reference"></a>
+
+    <header class="header">
+      <p class="header-col header-col--primary">
+        <a class="header-link" href="index.html">
+          CredentialsGoogle Docs
+        </a>
+         (100% documented)
+      </p>
+    
+        <p class="header-col header-col--secondary">
+          <a class="header-link" href="https://github.com/IBM-Swift/Kitura-CredentialsGoogle/">
+            <img class="header-icon" src="img/gh.png"/>
+            View on GitHub
+          </a>
+        </p>
+    
+    </header>
+
+    <p class="breadcrumbs">
+      <a class="breadcrumb" href="index.html">CredentialsGoogle Reference</a>
+      <img class="carat" src="img/carat.png" />
+      CredentialsGoogle  Reference
+    </p>
+
+    <div class="content-wrapper">
+      <nav class="navigation">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a class="nav-group-name-link" href="Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/CredentialsGoogle.html">CredentialsGoogle</a>
+              </li>
+              <li class="nav-group-task">
+                <a class="nav-group-task-link" href="Classes/CredentialsGoogleToken.html">CredentialsGoogleToken</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+
+        <section class="section">
+          <div class="section-content">
+            
+            <a href='#kitura-credentialsgoogle' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h1 id='kitura-credentialsgoogle'>Kitura-CredentialsGoogle</h1>
+
+<p>Plugins for the Kitura-Credentials framework that authenticate using the Google web login and a Google OAuth token</p>
+
+<p><img src="https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat" alt="Mac OS X">
+<img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
+<img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2"></p>
+<a href='#summary' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='summary'>Summary</h2>
+
+<p>Plugins for <a href="https://github.com/IBM-Swift/Kitura-Credentials">Kitura-Credentials</a> framework that authenticate using the <a href="https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps">Google web login with OAuth 2.0</a> and a <a href="https://developers.google.com/identity/protocols/OAuth2">Google OAuth token</a> that was acquired by a mobile app or other client of the Kitura based backend.</p>
+<a href='#table-of-contents' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='table-of-contents'>Table of Contents</h2>
+
+<ul>
+<li><a href="#swift-version">Swift version</a></li>
+<li><a href="#example-of-google-web-login">Example of Google web login</a></li>
+<li><a href="#example-of-authentication-with-a-google-oauth-token">Example of authentication with a Google OAuth token</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+<a href='#swift-version' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='swift-version'>Swift version</h2>
+
+<p>The latest version of Kitura-CredentialsGoogle requires <strong>Swift 3.0</strong>. You can download this version of the Swift binaries by following this <a href="https://swift.org/download/">link</a>. Compatibility with other Swift versions is not guaranteed.</p>
+<a href='#example-of-google-web-login' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='example-of-google-web-login'>Example of Google web login</h2>
+
+<p>A complete sample can be found in <a href="https://github.com/IBM-Swift/Kitura-Credentials-Sample">Kitura-Credentials-Sample</a>.
+<br></p>
+
+<p>First create an instance of <code>CredentialsGoogle</code> plugin and register it with <code>Credentials</code> framework:
+&ldquo;`swift
+import Credentials
+import CredentialsGoogle</p>
+
+<p>let credentials = Credentials()
+let googleCredentials = CredentialsGoogle(clientId: googleClientId, clientSecret: googleClientSecret, callbackUrl: serverUrl + <q>/login/google/callback</q>)
+credentials.register(googleCredentials)
+&rdquo;`
+<strong>Where:</strong>
+   - <em>googleClientId</em> is the Client ID from the credentials tab of your project in the Google Developer&rsquo;s console
+   - <em>googleClientSecret</em> is the Client Secret from the credentials tab of your project in the Google Developer&rsquo;s console</p>
+
+<p><strong>Note:</strong> The <em>callbackUrl</em> parameter above is used to tell the Google web login page where the user&rsquo;s browser should be redirected when the login is successful. It should be a URL handled by the server you are writing.</p>
+
+<p>Specify where to redirect non-authenticated requests:
+<code>swift
+credentials.options[&quot;failureRedirect&quot;] = &quot;/login/google&quot;
+</code></p>
+
+<p>Connect <code>credentials</code> middleware to requests to <code>/private</code>:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">all</span><span class="p">(</span><span class="s">"/private"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">credentials</span><span class="p">)</span>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/private/data"</span><span class="p">,</span> <span class="nv">handler</span><span class="p">:</span>
+    <span class="p">{</span> <span class="n">request</span><span class="p">,</span> <span class="n">response</span><span class="p">,</span> <span class="n">next</span> <span class="k">in</span>
+        <span class="o">...</span>  
+        <span class="nf">next</span><span class="p">()</span>
+<span class="p">})</span>
+</code></pre>
+
+<p>And call <code>authenticate</code> to login with Google and to handle the redirect (callback) from the Google login web page after a successful login:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/login/google"</span><span class="p">,</span>
+           <span class="nv">handler</span><span class="p">:</span> <span class="n">credentials</span><span class="o">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">googleCredentials</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/login/google/callback"</span><span class="p">,</span>
+           <span class="nv">handler</span><span class="p">:</span> <span class="n">credentials</span><span class="o">.</span><span class="nf">authenticate</span><span class="p">(</span><span class="n">googleCredentials</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+</code></pre>
+<a href='#example-of-authentication-with-a-google-oauth-token' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h2 id='example-of-authentication-with-a-google-oauth-token'>Example of authentication with a Google OAuth token</h2>
+
+<p>This example shows how to use <code>CredentialsGoogleToken</code> plugin to authenticate post requests, it shows both the server side and the client side of the request involved.</p>
+<a href='#server-side' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='server-side'>Server side</h3>
+
+<p>First create an instance of <code>Credentials</code> and an instance of <code>CredentialsGoogleToken</code> plugin:</p>
+<pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">Credentials</span>
+<span class="kd">import</span> <span class="kt">CredentialsGoogle</span>
+
+<span class="k">let</span> <span class="nv">credentials</span> <span class="o">=</span> <span class="kt">Credentials</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">googleCredentials</span> <span class="o">=</span> <span class="kt">CredentialsGoogleToken</span><span class="p">()</span>
+</code></pre>
+
+<p>Now register the plugin:
+<code>swift
+credentials.register(googleCredentials)
+</code></p>
+
+<p>Connect <code>credentials</code> middleware to post requests:</p>
+<pre class="highlight swift"><code><span class="n">router</span><span class="o">.</span><span class="nf">post</span><span class="p">(</span><span class="s">"/collection/:new"</span><span class="p">,</span> <span class="nv">middleware</span><span class="p">:</span> <span class="n">credentials</span><span class="p">)</span>
+</code></pre>
+
+<p>If the authentication is successful, <code>request.userProfile</code> will contain user profile information received from Google:
+<code>swift
+router.post(&quot;/collection/:new&quot;) {request, response, next in
+  ...
+  let profile = request.userProfile
+  let userId = profile.id
+  let userName = profile.displayName
+  ...
+  next()
+}
+</code></p>
+<a href='#client-side' class='anchor' aria-hidden=true><span class="header-anchor"></span></a><h3 id='client-side'>Client side</h3>
+
+<p>The client needs to put <a href="https://developers.google.com/identity/protocols/OAuth2">Google access token</a> in request&rsquo;s <code>access_token</code> HTTP header field, and <q>GoogleToken</q> in <code>X-token-type</code> field:
+&ldquo;`swift
+let urlRequest = NSMutableURLRequest(URL: NSURL(string: <q>http://\(serverUrl)/collection/\(name)</q>))
+urlRequest.HTTPMethod = <q>POST</q>
+urlRequest.HTTPBody = &hellip;</p>
+
+<p>urlRequest.addValue(googleAccessToken, forHTTPHeaderField: <q>id_token</q>)
+urlRequest.addValue(<q>GoogleToken</q>, forHTTPHeaderField: <q>X-token-type</q>)<br>
+Alamofire.request(urlRequest).responseJSON {response in
+  &hellip;
+}</p>
+<pre class="highlight plaintext"><code>
+## License
+This library is licensed under Apache 2.0. Full license text is available in [LICENSE](LICENSE.txt).
+</code></pre>
+
+          </div>
+        </section>
+
+
+      </article>
+    </div>
+    <section class="footer">
+      <p>&copy; 2016 <a class="link" href="" target="_blank" rel="external">IBM</a>. All rights reserved. (Last updated: 2016-09-16)</p>
+      <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.2</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+    </section>
+  </body>
+</div>
+</html>
