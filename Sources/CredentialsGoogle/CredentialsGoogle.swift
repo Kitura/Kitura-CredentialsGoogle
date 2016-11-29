@@ -34,6 +34,15 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     
     private var clientSecret: String
     
+    private var scope: String?
+
+    private var delegate: UserProfileDelegate?
+    
+    /// A delegate for `UserProfile` manipulation.
+    public var userProfileDelegate: UserProfileDelegate? {
+        return delegate
+    }
+    
     /// The URL that Google redirects back to.
     public var callbackUrl: String
     
@@ -55,10 +64,13 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     /// - Parameter clientId: The Client ID in the Google Developer's console.
     /// - Parameter clientSecret: The Client Secret in the Google Developer's console.
     /// - Parameter callbackUrl: The URL that Google redirects back to.
-    public init (clientId: String, clientSecret: String, callbackUrl: String) {
+    /// - Parameter options: A dictionary of plugin specific options.
+    public init (clientId: String, clientSecret: String, callbackUrl: String, options: [String:Any]?=nil) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
+        scope = options?["scope"] as? String
+        delegate = options?["userProfileDelegate"] as? UserProfileDelegate
     }
     
     /// Authenticate incoming request using Google web login with OAuth.
@@ -115,11 +127,19 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                                         body = Data()
                                         try profileResponse.readAllData(into: &body)
                                         jsonBody = JSON(data: body)
-                                        if let id = jsonBody["sub"].string,
-                                            let name = jsonBody["name"].string {
-                                            let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
+                                        if let delegate = self.delegate,
+                                            let dictionary = jsonBody.dictionaryObject,
+                                            let userProfile = delegate.identityProviderDictionaryToUserProfile(dictionary) {
                                             onSuccess(userProfile)
                                             return
+                                        }
+                                        else {
+                                            if let id = jsonBody["sub"].string,
+                                                let name = jsonBody["name"].string {
+                                                let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
+                                                onSuccess(userProfile)
+                                                return
+                                            }
                                         }
                                     }
                                     catch {
@@ -145,8 +165,9 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
         }
         else {
             // Log in
+            let scope = self.scope ?? "profile"
             do {
-                try response.redirect("https://accounts.google.com/o/oauth2/auth?client_id=\(clientId)&redirect_uri=\(callbackUrl)&scope=profile&response_type=code")
+                try response.redirect("https://accounts.google.com/o/oauth2/auth?client_id=\(clientId)&redirect_uri=\(callbackUrl)&scope=\(scope)&response_type=code")
                 inProgress()
             }
             catch {
