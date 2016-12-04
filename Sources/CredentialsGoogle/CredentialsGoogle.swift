@@ -28,7 +28,7 @@ import Foundation
 /// Authentication using Google web login with OAuth.
 /// See [Google's manual](https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens)
 /// for more information.
-public class CredentialsGoogle : CredentialsPluginProtocol {
+public class CredentialsGoogle: CredentialsPluginProtocol {
     
     private var clientId: String
     
@@ -65,7 +65,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     /// - Parameter clientSecret: The Client Secret in the Google Developer's console.
     /// - Parameter callbackUrl: The URL that Google redirects back to.
     /// - Parameter options: A dictionary of plugin specific options.
-    public init (clientId: String, clientSecret: String, callbackUrl: String, options: [String:Any]?=nil) {
+    public init(clientId: String, clientSecret: String, callbackUrl: String, options: [String:Any]?=nil) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
@@ -86,12 +86,11 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     ///                     authentication data in the request.
     /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
     ///                     case of redirecting authentication.
-    public func authenticate (request: RouterRequest, response: RouterResponse,
-                              options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
-                              onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
-                              onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
-                              inProgress: @escaping () -> Void) {
-        
+    public func authenticate(request: RouterRequest, response: RouterResponse,
+                             options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
+                             onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                             onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                             inProgress: @escaping () -> Void) {        
         if let code = request.queryParameters["code"] {
             var requestOptions: [ClientRequest.Options] = []
             requestOptions.append(.schema("https://"))
@@ -128,7 +127,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                                         try profileResponse.readAllData(into: &body)
                                         jsonBody = JSON(data: body)
                                         if let dictionary = jsonBody.dictionaryObject,
-                                            let userProfile = self.createUserProfile(from: dictionary) {
+                                            let userProfile = createUserProfile(from: dictionary, for: self.name) {
                                             if let delegate = self.delegate {
                                                 delegate.update(userProfile: userProfile, from: dictionary)
                                             }
@@ -168,32 +167,5 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                 Log.error("Failed to redirect to Google login page")
             }
         }
-    }
-    
-    private func createUserProfile(from googleData: [String:Any]) -> UserProfile? {
-        if let id = googleData["sub"] as? String,
-            let name = googleData["name"] as? String {
-
-            var userEmails: [UserProfile.UserProfileEmail]? = nil
-            if let email = googleData["email"] as? String {
-                let userEmail = UserProfile.UserProfileEmail(value: email, type: "")
-                userEmails = [userEmail]
-            }
-            
-            var userName: UserProfile.UserProfileName? = nil
-            if let familyName = googleData["familyName"] as? String,
-                let givenName = googleData["givenName"] as? String {
-                let middleName = (googleData["middleName"] as? String) ?? ""
-                userName = UserProfile.UserProfileName(familyName: familyName, givenName: givenName, middleName: middleName)
-            }
-            
-            var userPhotos: [UserProfile.UserProfilePhoto]? = nil
-            if let photo = googleData["picture"] as? String {
-                let userPhoto = UserProfile.UserProfilePhoto(photo)
-                userPhotos = [userPhoto]
-            }
-            return UserProfile(id: id, displayName: name, provider: self.name, name: userName, emails: userEmails, photos: userPhotos)
-        }
-        return nil
     }
 }
