@@ -129,6 +129,9 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                                         jsonBody = JSON(data: body)
                                         if let dictionary = jsonBody.dictionaryObject,
                                             let userProfile = self.createUserProfile(from: dictionary) {
+                                            if let delegate = self.delegate {
+                                                delegate.update(userProfile: userProfile, from: dictionary)
+                                            }
                                             onSuccess(userProfile)
                                             return
                                         }
