@@ -35,7 +35,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     private var clientSecret: String
     
     private var scope: String?
-
+    
     private var delegate: UserProfileDelegate?
     
     /// A delegate for `UserProfile` manipulation.
@@ -55,10 +55,10 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     public var redirecting: Bool {
         return true
     }
-
+    
     /// User profile cache.
     public var usersCache: NSCache<NSString, BaseCacheElement>?
-
+    
     /// Initialize a `CredentialsGoogle` instance.
     ///
     /// - Parameter clientId: The Client ID in the Google Developer's console.
@@ -102,7 +102,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
             headers["Accept"] = "application/json"
             headers["Content-Type"] = "application/x-www-form-urlencoded"
             requestOptions.append(.headers(headers))
- 
+            
             let body = "code=\(code)&client_id=\(clientId)&client_secret=\(clientSecret)&redirect_uri=\(callbackUrl)&grant_type=authorization_code"
             
             let requestForToken = HTTP.request(requestOptions) { googleResponse in
@@ -127,19 +127,10 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                                         body = Data()
                                         try profileResponse.readAllData(into: &body)
                                         jsonBody = JSON(data: body)
-                                        if let delegate = self.delegate,
-                                            let dictionary = jsonBody.dictionaryObject,
-                                            let userProfile = delegate.identityProviderDictionaryToUserProfile(dictionary) {
+                                        if let dictionary = jsonBody.dictionaryObject,
+                                            let userProfile = self.createUserProfile(from: dictionary) {
                                             onSuccess(userProfile)
                                             return
-                                        }
-                                        else {
-                                            if let id = jsonBody["sub"].string,
-                                                let name = jsonBody["name"].string {
-                                                let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
-                                                onSuccess(userProfile)
-                                                return
-                                            }
                                         }
                                     }
                                     catch {
@@ -174,5 +165,32 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                 Log.error("Failed to redirect to Google login page")
             }
         }
+    }
+    
+    private func createUserProfile(from googleData: [String:Any]) -> UserProfile? {
+        if let id = googleData["sub"] as? String,
+            let name = googleData["name"] as? String {
+
+            var userEmails: [UserProfile.UserProfileEmail]? = nil
+            if let email = googleData["email"] as? String {
+                let userEmail = UserProfile.UserProfileEmail(value: email, type: "")
+                userEmails = [userEmail]
+            }
+            
+            var userName: UserProfile.UserProfileName? = nil
+            if let familyName = googleData["familyName"] as? String,
+                let givenName = googleData["givenName"] as? String {
+                let middleName = (googleData["middleName"] as? String) ?? ""
+                userName = UserProfile.UserProfileName(familyName: familyName, givenName: givenName, middleName: middleName)
+            }
+            
+            var userPhotos: [UserProfile.UserProfilePhoto]? = nil
+            if let photo = googleData["picture"] as? String {
+                let userPhoto = UserProfile.UserProfilePhoto(photo)
+                userPhotos = [userPhoto]
+            }
+            return UserProfile(id: id, displayName: name, provider: self.name, name: userName, emails: userEmails, photos: userPhotos)
+        }
+        return nil
     }
 }
