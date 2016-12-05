@@ -69,8 +69,8 @@ public class CredentialsGoogle: CredentialsPluginProtocol {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
-        scope = options?["scope"] as? String
-        delegate = options?["userProfileDelegate"] as? UserProfileDelegate
+        scope = options?[CredentialsGoogleOptions.scope] as? String
+        delegate = options?[CredentialsGoogleOptions.userProfileDelegate] as? UserProfileDelegate
     }
     
     /// Authenticate incoming request using Google web login with OAuth.

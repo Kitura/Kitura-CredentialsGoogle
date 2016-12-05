@@ -33,12 +33,16 @@ import Credentials
 import CredentialsGoogle
 
 let credentials = Credentials()
-let googleCredentials = CredentialsGoogle(clientId: googleClientId, clientSecret: googleClientSecret, callbackUrl: serverUrl + "/login/google/callback")
+let googleCredentials = CredentialsGoogle(clientId: googleClientId,
+                                          clientSecret: googleClientSecret,
+                                          callbackUrl: serverUrl + "/login/google/callback",
+                                          options: options)
 credentials.register(googleCredentials)
 ```
 **Where:**
    - *googleClientId* is the Client ID from the credentials tab of your project in the Google Developer's console
    - *googleClientSecret* is the Client Secret from the credentials tab of your project in the Google Developer's console
+   - *options* is an optional dictionary ([String:Any]) of Google authentication options listed in `CredentialsGoogleOptions`.
 
 **Note:** The *callbackUrl* parameter above is used to tell the Google web login page where the user's browser should be redirected when the login is successful. It should be a URL handled by the server you are writing.
 

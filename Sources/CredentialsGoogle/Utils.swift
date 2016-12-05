@@ -27,9 +27,9 @@ func createUserProfile(from googleData: [String:Any], for provider: String) -> U
         }
         
         var userName: UserProfile.UserProfileName? = nil
-        if let familyName = googleData["familyName"] as? String,
-            let givenName = googleData["givenName"] as? String {
-            let middleName = (googleData["middleName"] as? String) ?? ""
+        if let familyName = googleData["family_name"] as? String,
+            let givenName = googleData["given_name"] as? String {
+            let middleName = (googleData["middle_name"] as? String) ?? ""
             userName = UserProfile.UserProfileName(familyName: familyName, givenName: givenName, middleName: middleName)
         }
         
