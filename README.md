@@ -42,7 +42,7 @@ credentials.register(googleCredentials)
 **Where:**
    - *googleClientId* is the Client ID from the credentials tab of your project in the Google Developer's console
    - *googleClientSecret* is the Client Secret from the credentials tab of your project in the Google Developer's console
-   - *options* is an optional dictionary ([String:Any]) of Google authentication options listed in `CredentialsGoogleOptions`.
+   - *options* is an optional dictionary ([String:Any]) of Google authentication options whose keys are listed in `CredentialsGoogleOptions`.
 
 **Note:** The *callbackUrl* parameter above is used to tell the Google web login page where the user's browser should be redirected when the login is successful. It should be a URL handled by the server you are writing.
 
@@ -87,7 +87,7 @@ let credentials = Credentials(options: options)
 let googleCredentials = CredentialsGoogleToken()
 ```
 **Where:**
-- *options* is an optional dictionary ([String:Any]) of Google authentication options listed in `CredentialsGoogleOptions`.
+- *options* is an optional dictionary ([String:Any]) of Google authentication options whose keys are listed in `CredentialsGoogleOptions`.
 
 Now register the plugin:
 ```swift
