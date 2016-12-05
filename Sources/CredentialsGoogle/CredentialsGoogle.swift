@@ -28,11 +28,20 @@ import Foundation
 /// Authentication using Google web login with OAuth.
 /// See [Google's manual](https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens)
 /// for more information.
-public class CredentialsGoogle : CredentialsPluginProtocol {
+public class CredentialsGoogle: CredentialsPluginProtocol {
     
     private var clientId: String
     
     private var clientSecret: String
+    
+    private var scope: String?
+    
+    private var delegate: UserProfileDelegate?
+    
+    /// A delegate for `UserProfile` manipulation.
+    public var userProfileDelegate: UserProfileDelegate? {
+        return delegate
+    }
     
     /// The URL that Google redirects back to.
     public var callbackUrl: String
@@ -46,19 +55,22 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     public var redirecting: Bool {
         return true
     }
-
+    
     /// User profile cache.
     public var usersCache: NSCache<NSString, BaseCacheElement>?
-
+    
     /// Initialize a `CredentialsGoogle` instance.
     ///
     /// - Parameter clientId: The Client ID in the Google Developer's console.
     /// - Parameter clientSecret: The Client Secret in the Google Developer's console.
     /// - Parameter callbackUrl: The URL that Google redirects back to.
-    public init (clientId: String, clientSecret: String, callbackUrl: String) {
+    /// - Parameter options: A dictionary of plugin specific options.
+    public init(clientId: String, clientSecret: String, callbackUrl: String, options: [String:Any]?=nil) {
         self.clientId = clientId
         self.clientSecret = clientSecret
         self.callbackUrl = callbackUrl
+        scope = options?[CredentialsGoogleOptions.scope] as? String
+        delegate = options?[CredentialsGoogleOptions.userProfileDelegate] as? UserProfileDelegate
     }
     
     /// Authenticate incoming request using Google web login with OAuth.
@@ -74,12 +86,11 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
     ///                     authentication data in the request.
     /// - Parameter inProgress: The closure to invoke to cause a redirect to the login page in the
     ///                     case of redirecting authentication.
-    public func authenticate (request: RouterRequest, response: RouterResponse,
-                              options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
-                              onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
-                              onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
-                              inProgress: @escaping () -> Void) {
-        
+    public func authenticate(request: RouterRequest, response: RouterResponse,
+                             options: [String:Any], onSuccess: @escaping (UserProfile) -> Void,
+                             onFailure: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                             onPass: @escaping (HTTPStatusCode?, [String:String]?) -> Void,
+                             inProgress: @escaping () -> Void) {        
         if let code = request.queryParameters["code"] {
             var requestOptions: [ClientRequest.Options] = []
             requestOptions.append(.schema("https://"))
@@ -90,7 +101,7 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
             headers["Accept"] = "application/json"
             headers["Content-Type"] = "application/x-www-form-urlencoded"
             requestOptions.append(.headers(headers))
- 
+            
             let body = "code=\(code)&client_id=\(clientId)&client_secret=\(clientSecret)&redirect_uri=\(callbackUrl)&grant_type=authorization_code"
             
             let requestForToken = HTTP.request(requestOptions) { googleResponse in
@@ -115,9 +126,11 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
                                         body = Data()
                                         try profileResponse.readAllData(into: &body)
                                         jsonBody = JSON(data: body)
-                                        if let id = jsonBody["sub"].string,
-                                            let name = jsonBody["name"].string {
-                                            let userProfile = UserProfile(id: id, displayName: name, provider: self.name)
+                                        if let dictionary = jsonBody.dictionaryObject,
+                                            let userProfile = createUserProfile(from: dictionary, for: self.name) {
+                                            if let delegate = self.delegate {
+                                                delegate.update(userProfile: userProfile, from: dictionary)
+                                            }
                                             onSuccess(userProfile)
                                             return
                                         }
@@ -145,8 +158,9 @@ public class CredentialsGoogle : CredentialsPluginProtocol {
         }
         else {
             // Log in
+            let scope = self.scope ?? "profile"
             do {
-                try response.redirect("https://accounts.google.com/o/oauth2/auth?client_id=\(clientId)&redirect_uri=\(callbackUrl)&scope=profile&response_type=code")
+                try response.redirect("https://accounts.google.com/o/oauth2/auth?client_id=\(clientId)&redirect_uri=\(callbackUrl)&scope=\(scope)&response_type=code")
                 inProgress()
             }
             catch {
