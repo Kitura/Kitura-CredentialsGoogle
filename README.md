@@ -83,9 +83,12 @@ First create an instance of `Credentials` and an instance of `CredentialsGoogleT
 import Credentials
 import CredentialsGoogle
 
-let credentials = Credentials()
+let credentials = Credentials(options: options)
 let googleCredentials = CredentialsGoogleToken()
 ```
+**Where:**
+- *options* is an optional dictionary ([String:Any]) of Google authentication options listed in `CredentialsGoogleOptions`.
+
 Now register the plugin:
 ```swift
 credentials.register(googleCredentials)
