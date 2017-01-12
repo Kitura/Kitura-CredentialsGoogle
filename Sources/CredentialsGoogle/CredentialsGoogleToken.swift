@@ -103,9 +103,10 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
                             let jsonBody = JSON(data: body)
                             if let dictionary = jsonBody.dictionaryObject,
                                 let userProfile = createUserProfile(from: dictionary, for: self.name) {
-                                if let delegate = self.delegate {
+                                if let delegate = self.delegate ?? options[CredentialsGoogleOptions.userProfileDelegate] as? UserProfileDelegate {
                                     delegate.update(userProfile: userProfile, from: dictionary)
                                 }
+
                                 let newCacheElement = BaseCacheElement(profile: userProfile)
                                 #if os(Linux)
                                     let key = NSString(string: token)
