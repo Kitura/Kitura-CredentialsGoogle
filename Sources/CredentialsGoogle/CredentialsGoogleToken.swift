@@ -37,9 +37,20 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
     public var redirecting: Bool {
         return false
     }
+
+    private var delegate: UserProfileDelegate?
+    
+    /// A delegate for `UserProfile` manipulation.
+    public var userProfileDelegate: UserProfileDelegate? {
+        return delegate
+    }
     
     /// Initialize a `CredentialsGoogleToken` instance.
-    public init() {}
+    ///
+    /// - Parameter options: A dictionary of plugin specific options.
+    public init(options: [String:Any]?=nil) {
+        delegate = options?[CredentialsGoogleOptions.userProfileDelegate] as? UserProfileDelegate
+    }
     
     /// User profile cache.
     public var usersCache: NSCache<NSString, BaseCacheElement>?
@@ -92,7 +103,7 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
                             let jsonBody = JSON(data: body)
                             if let dictionary = jsonBody.dictionaryObject,
                                 let userProfile = createUserProfile(from: dictionary, for: self.name) {
-                                if let delegate = options[CredentialsGoogleOptions.userProfileDelegate] as? UserProfileDelegate {
+                                if let delegate = self.delegate {
                                     delegate.update(userProfile: userProfile, from: dictionary)
                                 }
                                 let newCacheElement = BaseCacheElement(profile: userProfile)
