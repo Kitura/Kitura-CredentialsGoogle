@@ -64,7 +64,7 @@ public class CredentialsGoogle: CredentialsPluginProtocol {
     /// - Parameter clientId: The Client ID in the Google Developer's console.
     /// - Parameter clientSecret: The Client Secret in the Google Developer's console.
     /// - Parameter callbackUrl: The URL that Google redirects back to.
-    /// - Parameter options: A dictionary of plugin specific options.
+    /// - Parameter options: A dictionary of plugin specific options. The keys are defined in `CredentialsGoogleOptions`.
     public init(clientId: String, clientSecret: String, callbackUrl: String, options: [String:Any]?=nil) {
         self.clientId = clientId
         self.clientSecret = clientSecret
