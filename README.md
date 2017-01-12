@@ -83,8 +83,8 @@ First create an instance of `Credentials` and an instance of `CredentialsGoogleT
 import Credentials
 import CredentialsGoogle
 
-let credentials = Credentials(options: options)
-let googleCredentials = CredentialsGoogleToken()
+let credentials = Credentials()
+let googleCredentials = CredentialsGoogleToken(options: options)
 ```
 **Where:**
 - *options* is an optional dictionary ([String:Any]) of Google authentication options whose keys are listed in `CredentialsGoogleOptions`.

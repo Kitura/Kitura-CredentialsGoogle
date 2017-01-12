@@ -47,7 +47,7 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
     
     /// Initialize a `CredentialsGoogleToken` instance.
     ///
-    /// - Parameter options: A dictionary of plugin specific options.
+    /// - Parameter options: A dictionary of plugin specific options. The keys are defined in `CredentialsGoogleOptions`.
     public init(options: [String:Any]?=nil) {
         delegate = options?[CredentialsGoogleOptions.userProfileDelegate] as? UserProfileDelegate
     }
