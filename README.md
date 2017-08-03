@@ -1,6 +1,7 @@
 # Kitura-CredentialsGoogle
 Plugins for the Kitura-Credentials framework that authenticate using the Google web login and a Google OAuth token
 
+[![Build Status](https://travis-ci.org/IBM-Swift/Kitura-CredentialsGoogle.svg?branch=master)](https://travis-ci.org/IBM-Swift/Kitura-CredentialsGoogle)
 ![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)

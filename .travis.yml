@@ -1,0 +1,32 @@
+branches:
+  only:
+    - master
+    - develop
+    - /^issue.*$/
+
+notifications:
+  slack:
+    secure: "spl/MlD2mVGlto7/zMYQrswJDOM/2T/IcJ7AgrJCZ1spPZeM7HqKzgIwjlfK2Um65gzYITECTW6DEMI4pgporqHkKpCv56VCl2qoiwy3jFj2UMBFF7Bzga8hEZSygtREVz359rBZ9hfZb1+UKS/5z95Ewdm4GOIfX8GlqvWRISZqq9LpJVjw3qXg3JbRJMJJPJBCjHyEGEY4WoIYTvOifAphGNXTu9ELQeYh+Vfoq1S5lFwjwlVc7H2QYRvtQc5sNQVylq/sGbBr9AGCXUbnexmz+7VNI7+XiRcDO2EoXpHAuCZAkI+lwlXwqv2JZuHFv/1VKIRArL46pLxeQyf6RN8wWvKMfsBx/fR5KOX2InUeYeBl6yCN9A7+gMjBYamg8UuRkM7JgzChVoZz9uQrQZaQOUwo3hWbNwJK20kpAO12LKN6jOgkp+EsoRIO/j9eLxbTJBPsGIJ5YDGRUn8bMY6yg1OEiS17bmjPMIUikk8o8GXGntfHDMMTzyeYPdSmDjuaBkDs+/b5jIxERw5qVI4f3lyaFxe+S24aA6wT3sQjmBCUuo15uoSpiwsarp2k66pnNgA63oeMn+JmdInRTEgC7ZwDCMGdLZpIFt9fhHlGGvbgrhDPxmaNKe1GAWICjisQiO4GTw6iNgy4VAqGBkuG6uzNYBiLd0QfW0LlY6s="
+
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+    - os: linux
+      dist: trusty
+      sudo: required
+      env: SWIFT_SNAPSHOT=$SWIFT_4_DEV_SNAPSHOT
+    - os: osx
+      osx_image: xcode8.3
+      sudo: required
+    - os: osx
+      osx_image: xcode9
+      sudo: required
+      env: SWIFT_SNAPSHOT=$SWIFT_4_DEV_SNAPSHOT
+
+before_install:
+  - git clone https://github.com/IBM-Swift/Package-Builder.git
+
+script:
+  - ./Package-Builder/build-package.sh -projectDir $TRAVIS_BUILD_DIR
