@@ -1,0 +1,5 @@
+test:
+  image: ibmcom/swift-ubuntu:4.0
+  volumes:
+      - .:/Kitura-CredentialsGoogle
+  command: bash -c "cd /Kitura-CredentialsGoogle && swift package clean && swift build"

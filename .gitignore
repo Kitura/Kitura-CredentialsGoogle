@@ -1,5 +1,5 @@
-Kitura-CredentialsGoogle.xcodeproj
-Packages
-.build
-build
+*.xcodeproj/
+Package.resolved
+.build/*
+
 
