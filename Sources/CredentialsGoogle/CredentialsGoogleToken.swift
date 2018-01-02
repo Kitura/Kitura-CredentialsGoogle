@@ -97,8 +97,6 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
                         do {
                             var body = Data()
                             try response.readAllData(into: &body)
-                            //let jsonBody = JSON(data: body)
-                            //if let dictionary = jsonBody.dictionaryObject,
                             if let dictionary = try JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
                             let userProfile = createUserProfile(from: dictionary, for: self.name) {
                                 if let delegate = self.delegate ?? options[CredentialsGoogleOptions.userProfileDelegate] as? UserProfileDelegate {
