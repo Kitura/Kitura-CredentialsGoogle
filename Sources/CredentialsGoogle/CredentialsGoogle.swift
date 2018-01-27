@@ -18,9 +18,6 @@ import Kitura
 import KituraNet
 import LoggerAPI
 import Credentials
-
-import SwiftyJSON
-
 import Foundation
 
 // MARK CredentialsGoogle
@@ -109,8 +106,8 @@ public class CredentialsGoogle: CredentialsPluginProtocol {
                     do {
                         var body = Data()
                         try googleResponse.readAllData(into: &body)
-                        var jsonBody = JSON(data: body)
-                        if let token = jsonBody["access_token"].string {
+                        if var jsonBody = try JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
+                        let token = jsonBody["access_token"] as? String {
                             requestOptions = []
                             requestOptions.append(.schema("https://"))
                             requestOptions.append(.hostname("www.googleapis.com"))
@@ -125,9 +122,8 @@ public class CredentialsGoogle: CredentialsPluginProtocol {
                                     do {
                                         body = Data()
                                         try profileResponse.readAllData(into: &body)
-                                        jsonBody = JSON(data: body)
-                                        if let dictionary = jsonBody.dictionaryObject,
-                                            let userProfile = createUserProfile(from: dictionary, for: self.name) {
+                                        if let dictionary = try JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
+                                        let userProfile = createUserProfile(from: dictionary, for: self.name) {
                                             if let delegate = self.delegate {
                                                 delegate.update(userProfile: userProfile, from: dictionary)
                                             }
