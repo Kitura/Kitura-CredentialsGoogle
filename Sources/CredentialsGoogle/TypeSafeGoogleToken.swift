@@ -29,7 +29,7 @@ public protocol TypeSafeGoogleToken: TypeSafeCredentials {
     
 }
 
-// MARK FacebookCacheElement
+// MARK GoogleCacheElement
 
 /// The cache element for keeping google profile information.
 public class GoogleCacheElement {
@@ -84,7 +84,10 @@ extension TypeSafeGoogleToken {
     /// - Parameter onFailure: The closure to invoke in the case of an authentication failure.
     /// - Parameter onSkip: The closure to invoke when the plugin doesn't recognize
     ///                     the authentication token in the request.
-    public static func authenticate(request: RouterRequest, response: RouterResponse, onSuccess: @escaping (Self) -> Void, onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void, onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void) {
+    public static func authenticate(request: RouterRequest, response: RouterResponse,
+                                    onSuccess: @escaping (Self) -> Void,
+                                    onFailure: @escaping (HTTPStatusCode?, [String : String]?) -> Void,
+                                    onSkip: @escaping (HTTPStatusCode?, [String : String]?) -> Void) {
         
         guard let type = request.headers["X-token-type"], type == "GoogleToken" else {
             return onSkip(nil, nil)
