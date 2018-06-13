@@ -19,11 +19,11 @@ import KituraNet
 import Credentials
 import LoggerAPI
 
-/// A protocol that defines common attributes of Facebook authentication methods.
+/// A protocol that defines common attributes of Google authentication methods.
 ///
 /// It is not intended for a user's type to conform to this protocol directly. Instead,
 /// your type should conform to a specific authentication type, such as
-/// `TypeSafeFacebookToken`.
+/// `TypeSafeGoogleToken`.
 public protocol TypeSafeGoogle: TypeSafeCredentials {
 
 }

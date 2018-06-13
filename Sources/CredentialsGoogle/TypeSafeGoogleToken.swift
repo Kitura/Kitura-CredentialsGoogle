@@ -56,7 +56,7 @@ private class GoogleCacheElement {
     /// The user profile information stored as `TypeSafeGoogleToken`.
     var userProfile: TypeSafeGoogleToken
     
-    /// Initialize a `FacebookCacheElement`.
+    /// Initialize a `GoogleCacheElement`.
     ///
     /// - Parameter profile: the `TypeSafeGoogleToken` to store.
     init (profile: TypeSafeGoogleToken) {

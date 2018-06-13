@@ -105,7 +105,7 @@ class TestTypeSafeToken : XCTestCase {
     // JSON response retrieved from the Google user profile API.
     func testDefaultTokenProfile() {
         guard let profileInstance = GoogleTokenProfile.decodeGoogleResponse(data: testGoogleResponse) else {
-            return XCTFail("Facebook JSON response cannot be decoded to GoogleTokenProfile")
+            return XCTFail("Google JSON response cannot be decoded to GoogleTokenProfile")
         }
         // An equivalent test profile, constructed directly.
         let testTokenProfile = GoogleTokenProfile(id: "123456789012345678901", name: "John Doe", family_name: "Doe", given_name: "John", picture: "https://lh4.googleusercontent.com/-abc123/abc123/abc123/abc123/photo.jpg", locale: "en", gender: nil, email: "john_doe@invalid.com", verified_email: true)
