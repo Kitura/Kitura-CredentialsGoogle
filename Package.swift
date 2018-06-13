@@ -37,6 +37,10 @@ let package = Package(
         .target(
             name: "CredentialsGoogle",
             dependencies: ["Credentials"]
+        ),
+        .testTarget(
+            name: "CredentialsGoogleTests",
+            dependencies: ["CredentialsGoogle"]
         )
     ]
 )
