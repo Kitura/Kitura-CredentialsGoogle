@@ -14,6 +14,9 @@
  * limitations under the License.
  **/
 
+// Note, import not required, but code necessary to separate comment blocks for Jazzy to document the struct below.
+import Foundation
+
 /**
  A pre-constructed TypeSafeGoogleToken which contains the default fields that can be
  requested from Google.
@@ -22,10 +25,9 @@
  to the data.
 
  ### Usage Example: ###
-
  ```swift
  router.get("/googleProfile") { (user: GoogleTokenProfile, respondWith: (GoogleTokenProfile?, RequestError?) -> Void) in
- respondWith(user, nil)
+    respondWith(user, nil)
  }
  ```
  */
@@ -59,6 +61,6 @@ public struct GoogleTokenProfile: TypeSafeGoogleToken {
     public let email: String?
     
     /// Indicates whether the subject's e-mail address has been verified. Note that
-    /// this field is only present if `email` is has been granted.
+    /// this field is only present if `email` has been granted.
     public let verified_email: Bool?
 }
