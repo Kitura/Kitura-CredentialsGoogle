@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Classes  Reference</title>
+    <title>Protocols  Reference</title>
     <link rel="stylesheet" type="text/css" href="css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="css/highlight.css" />
     <meta charset="utf-8">
@@ -15,7 +15,7 @@
   <body>
 
 
-    <a title="Classes  Reference"></a>
+    <a title="Protocols  Reference"></a>
 
     <header class="header">
       <p class="header-col header-col--primary">
@@ -43,7 +43,7 @@
     <p class="breadcrumbs">
       <a class="breadcrumb" href="index.html">CredentialsGoogle Reference</a>
       <img class="carat" src="img/carat.png" />
-      Classes  Reference
+      Protocols  Reference
     </p>
 
     <div class="content-wrapper">
@@ -88,8 +88,8 @@
 
         <section class="section">
           <div class="section-content">
-            <h1>Classes</h1>
-            <p>The following classes are available globally.</p>
+            <h1>Protocols</h1>
+            <p>The following protocols are available globally.</p>
 
           </div>
         </section>
@@ -101,9 +101,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17CredentialsGoogleAAC"></a>
-                    <a name="//apple_ref/swift/Class/CredentialsGoogle" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17CredentialsGoogleAAC">CredentialsGoogle</a>
+                    <a name="/s:17CredentialsGoogle08TypeSafeB0P"></a>
+                    <a name="//apple_ref/swift/Protocol/TypeSafeGoogle" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17CredentialsGoogle08TypeSafeB0P">TypeSafeGoogle</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -111,17 +111,19 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Authentication using Google web login with OAuth.
-See <a href="https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps#Obtaining_Access_Tokens">Google&rsquo;s manual</a>
-for more information.</p>
+                        <p>A protocol that defines common attributes of Google authentication methods.</p>
 
-                        <a href="Classes/CredentialsGoogle.html" class="slightly-smaller">See more</a>
+<p>It is not intended for a user&rsquo;s type to conform to this protocol directly. Instead,
+your type should conform to a specific authentication type, such as
+<code><a href="Protocols/TypeSafeGoogleToken.html">TypeSafeGoogleToken</a></code>.</p>
+
+                        <a href="Protocols/TypeSafeGoogle.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">CredentialsGoogle</span><span class="p">:</span> <span class="kt">CredentialsPluginProtocol</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeGoogle</span><span class="p">:</span> <span class="kt">TypeSafeCredentials</span></code></pre>
 
                         </div>
                       </div>
@@ -135,9 +137,9 @@ for more information.</p>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:17CredentialsGoogle0aB5TokenC"></a>
-                    <a name="//apple_ref/swift/Class/CredentialsGoogleToken" class="dashAnchor"></a>
-                    <a class="token" href="#/s:17CredentialsGoogle0aB5TokenC">CredentialsGoogleToken</a>
+                    <a name="/s:17CredentialsGoogle08TypeSafeB5TokenP"></a>
+                    <a name="//apple_ref/swift/Protocol/TypeSafeGoogleToken" class="dashAnchor"></a>
+                    <a class="token" href="#/s:17CredentialsGoogle08TypeSafeB5TokenP">TypeSafeGoogleToken</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -145,15 +147,27 @@ for more information.</p>
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Authentication using Google OAuth token.</p>
+                        <p>A protocol that a user&rsquo;s type can conform to representing a user authenticated using a
+Google OAuth token.</p>
+<h3 id='usage-example' class='heading'>Usage Example:</h3>
+<pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ExampleProfile</span><span class="p">:</span> <span class="kt">TypeSafeGoogleToken</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">String</span>                              <span class="c1">// Protocol requirement: subject's unique id</span>
+    <span class="k">let</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span>                            <span class="c1">// Protocol requirement: subject's display name</span>
+    <span class="k">let</span> <span class="nv">email</span><span class="p">:</span> <span class="kt">String</span><span class="p">?</span>                          <span class="c1">// Optional field: may not be granted</span>
+<span class="p">}</span>
 
-                        <a href="Classes/CredentialsGoogleToken.html" class="slightly-smaller">See more</a>
+<span class="n">router</span><span class="o">.</span><span class="nf">get</span><span class="p">(</span><span class="s">"/googleProfile"</span><span class="p">)</span> <span class="p">{</span> <span class="p">(</span><span class="nv">user</span><span class="p">:</span> <span class="kt">ExampleProfile</span><span class="p">,</span> <span class="nv">respondWith</span><span class="p">:</span> <span class="p">(</span><span class="kt">ExampleProfile</span><span class="p">?,</span> <span class="kt">RequestError</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="k">in</span>
+    <span class="nf">respondWith</span><span class="p">(</span><span class="n">user</span><span class="p">,</span> <span class="kc">nil</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre>
+
+                        <a href="Protocols/TypeSafeGoogleToken.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">CredentialsGoogleToken</span><span class="p">:</span> <span class="kt">CredentialsPluginProtocol</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">TypeSafeGoogleToken</span><span class="p">:</span> <span class="kt"><a href="Protocols/TypeSafeGoogle.html">TypeSafeGoogle</a></span></code></pre>
 
                         </div>
                       </div>
