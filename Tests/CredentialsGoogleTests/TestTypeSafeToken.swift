@@ -31,6 +31,7 @@ class TestTypeSafeToken : XCTestCase {
             ("testMinimalTokenProfile", testMinimalTokenProfile),
             ("testCache", testCache),
             ("testTwoInCache", testTwoInCache),
+            ("testCacheEviction", testCacheEviction),
             ("testCachedProfile", testCachedProfile),
             ("testMissingTokenType", testMissingTokenType),
             ("testMissingAccessToken", testMissingAccessToken),
@@ -63,8 +64,29 @@ class TestTypeSafeToken : XCTestCase {
         }
     }
 
+    // An example of a user-defined GoogleToken profile with a limit imposed on
+    // the token cache size.
+    struct TestGoogleTokenCache: TypeSafeGoogleToken, Equatable {
+        // Fields that should be retrieved from Google
+        var id: String
+        var name: String
+        var email: String?
+
+        // Cache should only hold two profiles
+        static let cacheSize = 2
+
+        // Testing requirement: Equatable
+        static func == (lhs: TestGoogleTokenCache, rhs: TestGoogleTokenCache) -> Bool {
+            return lhs.id == rhs.id
+                && lhs.name == rhs.name
+                && lhs.provider == rhs.provider
+                && lhs.email == rhs.email
+        }
+    }
+
     let token = "Test token"
     let token2 = "Test token 2"
+    let token3 = "Test token 3"
 
     // A Google response JSON fragment. Two optional fields are present (email, verified_email).
     // Another optional field (gender) is not provided.
@@ -153,6 +175,45 @@ class TestTypeSafeToken : XCTestCase {
         }
         XCTAssertEqual(cacheProfile1, profileInstance1, "retrieved different profile from cache1")
         XCTAssertEqual(cacheProfile2, profileInstance2, "retrieved different profile from cache2")
+    }
+
+    // Tests that a user can set a limit on the size of the token cache. We test that the
+    // least-used cache entry is purged from a cache with capacity 2 when a third entry is
+    // inserted.
+    // Note that this test uses a separate type (TestGoogleTokenCache instead of
+    // TestGoogleToken) from all other tests, because there is no API for resetting the
+    // token cache on a type, and we do not want this test's behaviour to be influenced by
+    // the execution of previous tests.
+    func testCacheEviction() {
+        guard let profileInstance1 = TestGoogleTokenCache.decodeGoogleResponse(data: testGoogleResponse) else {
+            return XCTFail("Facebook JSON response cannot be decoded to TestGoogleTokenCache")
+        }
+        guard let profileInstance2 = TestGoogleTokenCache.decodeGoogleResponse(data: testGoogleResponse) else {
+            return XCTFail("Facebook JSON response cannot be decoded to TestGoogleTokenCache")
+        }
+        guard let profileInstance3 = TestGoogleTokenCache.decodeGoogleResponse(data: testGoogleResponse) else {
+            return XCTFail("Facebook JSON response cannot be decoded to TestGoogleTokenCache")
+        }
+        // Insert two tokens into the cache
+        TestGoogleTokenCache.saveInCache(profile: profileInstance1, token: token)
+        TestGoogleTokenCache.saveInCache(profile: profileInstance2, token: token2)
+        TestGoogleTokenCache.saveInCache(profile: profileInstance3, token: token3)
+        // We expect one of the entries to have been evicted, but it is not predictable
+        // which one (behaviour seems to differ between macOS and Linux)
+        var profileCount = 0
+        if let cacheProfile1 = TestGoogleTokenCache.getFromCache(token: token) {
+            XCTAssertEqual(cacheProfile1, profileInstance1, "Retrieved different cached profile for token 1")
+            profileCount += 1
+        }
+        if let cacheProfile2 = TestGoogleTokenCache.getFromCache(token: token2) {
+            XCTAssertEqual(cacheProfile2, profileInstance2, "Retrieved different cached profile for token 2")
+            profileCount += 1
+        }
+        if let cacheProfile3 = TestGoogleTokenCache.getFromCache(token: token3) {
+            XCTAssertEqual(cacheProfile3, profileInstance3, "Retrieved different cached profile for token 3")
+            profileCount += 1
+        }
+        XCTAssertEqual(profileCount, 2, "Expected to retrieve 2 profiles from the cache, but retrieved \(profileCount)")
     }
 
     // Tests that a profile stored in the token cache can be retrieved and returned by a Codable

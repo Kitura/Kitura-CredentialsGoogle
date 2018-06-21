@@ -48,7 +48,13 @@ public protocol TypeSafeGoogleToken: TypeSafeGoogle {
     
     /// The subject's display name.
     var name: String { get }
-    
+
+    // MARK: Static fields
+
+    /// The maximum size of the in-memory token cache for this type. If not specified, then
+    /// the cache has an unlimited size.
+    static var cacheSize: Int { get }
+
 }
 
 /// The cache element for keeping google profile information.
@@ -75,6 +81,13 @@ private struct TypeSafeGoogleTokenCache {
 }
 
 extension TypeSafeGoogleToken {
+
+    /// A default value for the cache size of `0`, which means that there is no limit on how
+    /// many profiles the token cache can store.
+    public static var cacheSize: Int {
+        return 0
+    }
+
     // Associates a token cache with the user's type. This relieves the user from having to
     // declare a usersCache property on their conforming type.
     private static var usersCache: NSCache<NSString, GoogleCacheElement> {
@@ -83,6 +96,8 @@ extension TypeSafeGoogleToken {
             return usersCache
         } else {
             let usersCache = NSCache<NSString, GoogleCacheElement>()
+            Log.debug("Token cache size for \(key): \(cacheSize == 0 ? "unlimited" : String(describing: cacheSize))")
+            usersCache.countLimit = cacheSize
             TypeSafeGoogleTokenCache.cacheForType[key] = usersCache
             return usersCache
         }
