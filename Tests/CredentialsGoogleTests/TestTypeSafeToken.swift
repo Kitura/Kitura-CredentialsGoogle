@@ -31,6 +31,7 @@ class TestTypeSafeToken : XCTestCase {
             ("testMinimalTokenProfile", testMinimalTokenProfile),
             ("testCache", testCache),
             ("testTwoInCache", testTwoInCache),
+            ("testCacheEviction", testCacheEviction),
             ("testCachedProfile", testCachedProfile),
             ("testMissingTokenType", testMissingTokenType),
             ("testMissingAccessToken", testMissingAccessToken),
