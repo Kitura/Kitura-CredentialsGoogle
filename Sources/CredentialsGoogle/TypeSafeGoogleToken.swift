@@ -54,6 +54,9 @@ public protocol TypeSafeGoogleToken: TypeSafeGoogle {
     /// The maximum size of the in-memory token cache for this type. If not specified, then
     /// the cache has an unlimited size.
     static var cacheSize: Int { get }
+    
+    /// The time in seconds since the user profile was generated that the access token will be considered valid.
+    static var tokenTimeToLive: Int? { get }
 
 }
 
@@ -62,11 +65,15 @@ private class GoogleCacheElement {
     /// The user profile information stored as `TypeSafeGoogleToken`.
     var userProfile: TypeSafeGoogleToken
     
+    /// The time the UserProfile was originally created
+    var createdAt: Date
+    
     /// Initialize a `GoogleCacheElement`.
     ///
     /// - Parameter profile: the `TypeSafeGoogleToken` to store.
     init (profile: TypeSafeGoogleToken) {
         userProfile = profile
+        createdAt = Date()
     }
 }
 
@@ -86,6 +93,11 @@ extension TypeSafeGoogleToken {
     /// many profiles the token cache can store.
     public static var cacheSize: Int {
         return 0
+    }
+    
+    /// Default for tokenTimeToLive is nil meaning the token will be considered valid as long as it is in the cache.
+    public static var tokenTimeToLive: Int? {
+        return nil
     }
 
     // Associates a token cache with the user's type. This relieves the user from having to
@@ -150,8 +162,15 @@ extension TypeSafeGoogleToken {
         #else
         let key = token as NSString
         #endif
-        let cacheElement = Self.usersCache.object(forKey: key)
-        return cacheElement?.userProfile as? Self
+        guard let cacheElement = Self.usersCache.object(forKey: key) else {
+            return nil
+        }
+        if let ttl = Self.tokenTimeToLive,
+            cacheElement.createdAt.addingTimeInterval(TimeInterval(ttl)) < Date()
+        {
+            return nil
+        }
+        return cacheElement.userProfile as? Self
     }
 
     static func saveInCache(profile: Self, token: String) {

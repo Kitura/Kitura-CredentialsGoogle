@@ -34,6 +34,9 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
     public var redirecting: Bool {
         return false
     }
+    
+    /// The time in seconds since the user profile was generated that the access token will be considered valid.
+    public var tokenTimeToLive: Int?
 
     private var delegate: UserProfileDelegate?
     
@@ -77,10 +80,17 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
                 #else
                     let key = token as NSString
                 #endif
-                let cacheElement = usersCache!.object(forKey: key)
-                if let cached = cacheElement {
-                    onSuccess(cached.userProfile)
-                    return
+                if let cached = usersCache?.object(forKey: key) {
+                    if let ttl = tokenTimeToLive {
+                        if Date() < cached.createdAt.addingTimeInterval(TimeInterval(ttl)) {
+                            onSuccess(cached.userProfile)
+                            return
+                        }
+                    // If no time to live set use token until it is evicted from the cache
+                    } else {
+                        onSuccess(cached.userProfile)
+                        return
+                    }
                 }
                 
                 var requestOptions: [ClientRequest.Options] = []
@@ -109,7 +119,7 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
                                 #else
                                     let key = token as NSString
                                 #endif
-                                self.usersCache!.setObject(newCacheElement, forKey: key)
+                                self.usersCache?.setObject(newCacheElement, forKey: key)
                                 onSuccess(userProfile)
                                 return
                             }
