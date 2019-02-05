@@ -36,7 +36,7 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
     }
     
     /// The time in seconds since the user profile was generated that the access token will be considered valid.
-    public var tokenTimeToLive: Int?
+    public var tokenTimeToLive: TimeInterval?
 
     private var delegate: UserProfileDelegate?
     
@@ -82,7 +82,7 @@ public class CredentialsGoogleToken: CredentialsPluginProtocol {
                 #endif
                 if let cached = usersCache?.object(forKey: key) {
                     if let ttl = tokenTimeToLive {
-                        if Date() < cached.createdAt.addingTimeInterval(TimeInterval(ttl)) {
+                        if Date() < cached.createdAt.addingTimeInterval(ttl) {
                             onSuccess(cached.userProfile)
                             return
                         }

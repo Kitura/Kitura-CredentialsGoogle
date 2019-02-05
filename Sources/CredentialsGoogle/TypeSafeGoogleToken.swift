@@ -56,7 +56,7 @@ public protocol TypeSafeGoogleToken: TypeSafeGoogle {
     static var cacheSize: Int { get }
     
     /// The time in seconds since the user profile was generated that the access token will be considered valid.
-    static var tokenTimeToLive: Int? { get }
+    static var tokenTimeToLive: TimeInterval? { get }
 
 }
 
@@ -96,7 +96,7 @@ extension TypeSafeGoogleToken {
     }
     
     /// Default for tokenTimeToLive is nil meaning the token will be considered valid as long as it is in the cache.
-    public static var tokenTimeToLive: Int? {
+    public static var tokenTimeToLive: TimeInterval? {
         return nil
     }
 
@@ -166,7 +166,7 @@ extension TypeSafeGoogleToken {
             return nil
         }
         if let ttl = Self.tokenTimeToLive,
-            cacheElement.createdAt.addingTimeInterval(TimeInterval(ttl)) < Date()
+            cacheElement.createdAt.addingTimeInterval(ttl) < Date()
         {
             return nil
         }
