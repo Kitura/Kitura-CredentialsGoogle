@@ -30,7 +30,7 @@ matrix:
       dist: xenial
       sudo: required
       services: docker
-      env: DOCKER_IMAGE=5.0-xenial
+      env: DOCKER_IMAGE=swift:5.0-xenial
     - os: linux
       dist: xenial
       sudo: required
