@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:4.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 /**
@@ -27,7 +27,7 @@ let package = Package(
             name: "CredentialsGoogle",
             targets: ["CredentialsGoogle"]
         )
-    ],    
+    ],
     dependencies: [
         .package(url: "https://github.com/IBM-Swift/Kitura-Credentials.git", from: "2.4.0"),
     ],
