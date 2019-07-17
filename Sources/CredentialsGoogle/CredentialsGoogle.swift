@@ -106,7 +106,7 @@ public class CredentialsGoogle: CredentialsPluginProtocol {
                     do {
                         var body = Data()
                         try googleResponse.readAllData(into: &body)
-                        if var jsonBody = try JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
+                        if let jsonBody = try JSONSerialization.jsonObject(with: body, options: []) as? [String : Any],
                         let token = jsonBody["access_token"] as? String {
                             requestOptions = []
                             requestOptions.append(.schema("https://"))
