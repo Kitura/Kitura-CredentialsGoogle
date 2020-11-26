@@ -1,16 +1,16 @@
 <p align="center">
     <a href="http://kitura.io/">
-        <img src="https://raw.githubusercontent.com/IBM-Swift/Kitura/master/Sources/Kitura/resources/kitura-bird.svg?sanitize=true" height="100" alt="Kitura">
+        <img src="https://raw.githubusercontent.com/Kitura/Kitura/master/Sources/Kitura/resources/kitura-bird.svg?sanitize=true" height="100" alt="Kitura">
     </a>
 </p>
 
 
 <p align="center">
-    <a href="https://ibm-swift.github.io/Kitura-CredentialsGoogle/index.html">
+    <a href="https://kitura.github.io/Kitura-CredentialsGoogle/index.html">
         <img src="https://img.shields.io/badge/apidoc-KituraCredentialsGoogle-1FBCE4.svg?style=flat" alt="APIDoc">
     </a>
-    <a href="https://travis-ci.org/IBM-Swift/Kitura-CredentialsGoogle">
-    <img src="https://travis-ci.org/IBM-Swift/Kitura-CredentialsGoogle.svg?branch=master" alt="Build Status - Master">
+    <a href="https://travis-ci.org/Kitura/Kitura-CredentialsGoogle">
+    <img src="https://travis-ci.org/Kitura/Kitura-CredentialsGoogle.svg?branch=master" alt="Build Status - Master">
     </a>
     <img src="https://img.shields.io/badge/os-macOS-green.svg?style=flat" alt="macOS">
     <img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
@@ -24,7 +24,7 @@
 Plugin for the Kitura-Credentials framework that authenticates using the Google web login and a Google OAuth token.
 
 ## Summary
-Plugin for the [Kitura-Credentials](https://github.com/IBM-Swift/Kitura-Credentials) framework that authenticates using the [Google web login with OAuth 2.0](https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps) and a [Google OAuth token](https://developers.google.com/identity/protocols/OAuth2) that was acquired by a mobile app or other client of the Kitura based backend.
+Plugin for the [Kitura-Credentials](https://github.com/Kitura/Kitura-Credentials) framework that authenticates using the [Google web login with OAuth 2.0](https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps) and a [Google OAuth token](https://developers.google.com/identity/protocols/OAuth2) that was acquired by a mobile app or other client of the Kitura based backend.
 
 ## Swift version
 The latest version of Kitura-CredentialsGoogle requires **Swift 4.0** or newer. You can download this version of the Swift binaries by following this [link](https://swift.org/download/). Compatibility with other Swift versions is not guaranteed.
@@ -33,11 +33,11 @@ The latest version of Kitura-CredentialsGoogle requires **Swift 4.0** or newer. 
 
 #### Add dependencies
 
-Add the `Kitura-CredentialsGoogle` and `Credentials` packages to the dependencies within your application’s `Package.swift` file. Substitute `"x.x.x"` with the latest `Kitura-CredentialsGoogle` [release](https://github.com/IBM-Swift/Kitura-CredentialsGoogle/releases) and the latest `Kitura-Credentials` [release](https://github.com/IBM-Swift/Kitura-Credentials/releases).
+Add the `Kitura-CredentialsGoogle` and `Credentials` packages to the dependencies within your application’s `Package.swift` file. Substitute `"x.x.x"` with the latest `Kitura-CredentialsGoogle` [release](https://github.com/Kitura/Kitura-CredentialsGoogle/releases) and the latest `Kitura-Credentials` [release](https://github.com/Kitura/Kitura-Credentials/releases).
 
 ```swift
-.package(url: "https://github.com/IBM-Swift/Kitura-Credentials.git", from: "x.x.x")
-.package(url: "https://github.com/IBM-Swift/Kitura-CredentialsGoogle.git", from: "x.x.x")
+.package(url: "https://github.com/Kitura/Kitura-Credentials.git", from: "x.x.x")
+.package(url: "https://github.com/Kitura/Kitura-CredentialsGoogle.git", from: "x.x.x")
 ```
 
 Add `CredentialsGoogle` and `Credentials` to your target's dependencies:
@@ -53,7 +53,7 @@ import CredentialsGoogle
 ```
 
 ## Example of Google web login
-A complete sample can be found in [Kitura-Sample](https://github.com/IBM-Swift/Kitura-Sample).
+A complete sample can be found in [Kitura-Sample](https://github.com/Kitura/Kitura-Sample).
 <br>
 
 First set up the session:
@@ -163,7 +163,7 @@ Alamofire.request(urlRequest).responseJSON {response in
 
 ## API documentation
 
-For more information visit our [API reference](http://ibm-swift.github.io/Kitura-CredentialsGoogle/).
+For more information visit our [API reference](http://kitura.github.io/Kitura-CredentialsGoogle/).
 
 ## Community
 
@@ -171,4 +171,4 @@ We love to talk server-side Swift, and Kitura. Join our [Slack](http://swift-at-
 
 ## License
 
-This library is licensed under Apache 2.0. Full license text is available in [LICENSE](https://github.com/IBM-Swift/Kitura-CredentialsGoogle/blob/master/LICENSE.txt).
+This library is licensed under Apache 2.0. Full license text is available in [LICENSE](https://github.com/Kitura/Kitura-CredentialsGoogle/blob/master/LICENSE.txt).
