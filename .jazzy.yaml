@@ -1,6 +1,6 @@
 module: CredentialsGoogle
-author: IBM
-github_url: https://github.com/IBM-Swift/Kitura-CredentialsGoogle/
+author: IBM & Kitura Project Contributors
+github_url: https://github.com/Kitura/Kitura-CredentialsGoogle/
 
 theme: fullwidth
 clean: true
@@ -10,6 +10,4 @@ readme: README.md
 
 skip_undocumented: false
 hide_documentation_coverage: false
-
-xcodebuild_arguments: [-project, Kitura-CredentialsGoogle.xcodeproj, -target, CredentialsGoogle, LIBRARY_SEARCH_PATHS=.build/debug]
 
